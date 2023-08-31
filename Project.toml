@@ -1,0 +1,7 @@
+name = "YAlpha"
+uuid = "dff91fba-523e-4b14-a8e7-753381838d04"
+authors = ["ajinno1124 <jinno.asanosuke.36w@st.kyoto-u.ac.jp> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.9"
