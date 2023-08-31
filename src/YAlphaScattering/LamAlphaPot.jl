@@ -1,10 +1,10 @@
-module LambdaAlphaPot
+module LamAlphaPot
     include("./SkyrmeParams.jl")
     import .SkyrmeParams
     include("./constants.jl")
     include("./MyLib.jl")
 
-    mutable struct YAlphaPotentials{T <: AbstractFloat}
+	mutable struct YAlphaPot{T <: AbstractFloat}
         rmesh::AbstractArray
         ρ::Vector{T}
         τ::Vector{T}
@@ -15,6 +15,8 @@ module LambdaAlphaPot
         dh2_2μeff::Vector{T}
         ddh2_2μeff::Vector{T}
     end
+
+	export YAlphaPot
 
     function GetNuc(nu::Float64,A)
         return nu/(1-1/A)
@@ -62,7 +64,7 @@ module LambdaAlphaPot
         dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
         ddh2_2μeff=MyLib.diff2nd5pt(h,h2_2μeff,1)
 
-        return YAlphaPotentials(rmesh,ρ,τ,Lapρ,Ulocal,h2_2μeff,dh2_2μeff,ddh2_2μeff)
+        return YAlphaPot(rmesh,ρ,τ,Lapρ,Ulocal,h2_2μeff,dh2_2μeff,ddh2_2μeff)
     end
 
     export CalcPotentials

@@ -5,8 +5,8 @@ module YAlpha
     using .SkyrmeParams
     export read_SkyrmeParam,getaL, ħc
 
-    include("YAlphaScattering/LambdaAlphaPot.jl")
-    using .LambdaAlphaPot
+    include("YAlphaScattering/LamAlphaPot.jl")
+    using .LamAlphaPot
     export CalcPotentials
 
 end
