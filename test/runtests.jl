@@ -20,7 +20,7 @@ using Test
     plot!(rmesh,DensePots.ρ,label="ρ")
     plot!(rmesh,DensePots.τ,label="τ")
     plot!(rmesh,DensePots.Lapρ,label="Lapρ")
-    plot!(rmesh,DensePots.Ulocal,label="U_local")
+    plot!(rmesh,DensePots.U_local,label="U_local")
     savefig("Densities.pdf")
 
     plot(xlabel="r (fm)", title="LYIV",xlim=(0,3))
@@ -28,5 +28,20 @@ using Test
     plot!(rmesh,DensePots.dh2_2μeff,label="dh2_2μeff")
     plot!(rmesh,DensePots.ddh2_2μeff,label="ddh2_2μeff")
     savefig("EffectiveMass.pdf")
+end
+
+@testset "Scattering" begin
+	qmesh=0.25:0.25:1
+	h=0.1
+    N_rmesh=10000
+	rmesh=0.5*h:h:h*(N_rmesh-0.5)
+    nu=0.2
+	ParamIndex=1
+	plot(xlabel="r (fm)", ylabel="χ",title="Parameter=$ParamIndex")
+	for i=eachindex(qmesh)
+		state=LamAlphaWaveFunc(qmesh[i],rmesh,nu,ParamIndex)
+		plot!(rmesh,state.ψ,label="q=$(state.q)")
+	end
+	savefig("YAlphaPotential.pdf")
 end
 

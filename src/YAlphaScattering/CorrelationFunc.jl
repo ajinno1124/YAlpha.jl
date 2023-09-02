@@ -2,22 +2,27 @@ module CoorelationFunc
 
 include("./Scattering.jl")
 import .Scattering
-include("./LambdaAlphaPot.jl")
-import .LambdaAlphaPot
+include("./LamAlphaPot.jl")
+import .LamAlphaPot
+include("./constants.jl")
 
 mutable struct CF
-	q::AbstructArray
-	C::Vector{AbstructArray}
+	q::AbstractArray
+	C::Vector{AbstractArray}
 end
 
-function YAlphaWaveFunc(q,rmesh,nu,ParamIndex)
-	potset=LambdaAlphaPot.CalcPots(rmesh,nu,ParamIndex)
-	χ=Scattering.RadWaveFunc(q,potset)
-	return χ
+function LamAlphaWaveFunc(q,rmesh,nu,ParamIndex)
+	LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex)
+	PS=Scattering.PotSet(LamAPot.h2_2μeff, LamAPot.dh2_2μeff, LamAPot.ddh2_2μeff, LamAPot.U_local)
+	μ=mΛMeV*mαMeV/(mΛMeV + mαMeV)
+	state=Scattering.RadWaveFunc(q,μ,rmesh,PS)
+	return state
 end
+
+export LamAlphaWaveFunc
 
 function CalcCF(q,rmesh,nu,ParamIndex)
-	χ=YAlphaWaveFunc(q,rmesh,nu,ParamIndex)
+	χ=LamAlphaWaveFunc(q,rmesh,nu,ParamIndex)
 
 	return C
 end

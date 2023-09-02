@@ -1,7 +1,8 @@
 module Scattering
 
-include("./LambdaAlphaPot.jl")
-import .LamAlphaPot
+#include("./LamAlphaPot.jl")
+#import .LamAlphaPot
+include("./constants.jl")
 
 mutable struct State
     q::AbstractFloat
@@ -38,20 +39,43 @@ function Numerov6(ψ1::Float64,ψ2::Float64,f,h)
 	return val
 end
 
-function InitialCondition(f_vec)
-    Rin=zeros(Float64,3)
-    Rin[1]=0.5*h
-	Rin[2]=Numerov6((-1)^(l+1)*Rin[1],Rin[1], view(f_vec,vcat(1,1:2)),h)
-    Rin[3]=Numerov6(view(Rin,1:2), view(f_vec,1:3),h)
-
-    return Rin,Rout
+function InitialCondition!(h,R,f_vec)
+    R[1]=0.5*h
+	# only consider s-wave
+	l=0
+	R[2]=Numerov6((-1)^(l+1)*R[1],R[1], view(f_vec,vcat(1,1:2)),h)
+    R[3]=Numerov6(view(R,1:2), view(f_vec,1:3),h)
 end
 
-#Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2q^2/2μ
+function Calc_fvec(q,μ,rmesh,PS::PotSet)
+	f_vec=zeros(Float64,length(rmesh))
+	@. f_vec += -0.25*PS.dh2_2μeff[:]^2/PS.h2_2μeff[:] + 0.5*PS.ddh2_2μeff[:]
+	@. f_vec += PS.U[:] + PS.dh2_2μeff[:]/rmesh[:]
+	@. f_vec -= ħc^2*q^2/(2*μ)
+	@. f_vec /= -PS.h2_2μeff
+
+	return f_vec
+end
+
+#Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2*q^2/(2μ)
 #Calculate wavefunction and PhaseShift
-function RadWaveFunc(q,potset::PotSet)
-    
-    return ψ
+function RadWaveFunc(q,μ,rmesh,PS::PotSet)
+    h=rmesh[2]-rmesh[1]
+	N_rmesh=length(rmesh)
+
+	f_vec=Calc_fvec(q,μ,rmesh,PS)
+
+    R=zeros(Float64,N_rmesh)
+	InitialCondition!(h,R,f_vec)
+
+    for i in 3:N_rmesh-1
+        R[i+1]=Numerov6(view(R,i-1:i),view(f_vec,i-1:i+1),h)
+    end
+
+	@. R[:]*=(PS.h2_2μeff[:])^(-0.5)
+	#Normalization is needed.
+
+    return State(q,R)
 end
 
 export RadWaveFunc
