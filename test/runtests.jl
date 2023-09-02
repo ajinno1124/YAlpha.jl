@@ -31,16 +31,16 @@ using Test
 end
 
 @testset "Scattering" begin
-	qmesh=0.25:0.25:1
+	qcmesh=50:50:200
 	h=0.1
-    N_rmesh=10000
+    N_rmesh=300
 	rmesh=0.5*h:h:h*(N_rmesh-0.5)
     nu=0.2
 	ParamIndex=1
-	plot(xlabel="r (fm)", ylabel="χ",title="Parameter=$ParamIndex")
-	for i=eachindex(qmesh)
-		state=LamAlphaWaveFunc(qmesh[i],rmesh,nu,ParamIndex)
-		plot!(rmesh,state.ψ,label="q=$(state.q)")
+	plot(xlabel="r", ylabel="χ",title="Parameter=$ParamIndex")
+	for i=eachindex(qcmesh)
+		state=LamAlphaWaveFunc(qcmesh[i],rmesh,nu,ParamIndex)
+		plot!(rmesh,state.ψ,label="q=$(state.qc) [MeV/c]")
 	end
 	savefig("YAlphaPotential.pdf")
 end

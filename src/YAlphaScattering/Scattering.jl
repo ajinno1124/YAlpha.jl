@@ -5,7 +5,7 @@ module Scattering
 include("./constants.jl")
 
 mutable struct State
-    q::AbstractFloat
+    qc::AbstractFloat
     ψ::Vector{AbstractFloat}
 end
 
@@ -47,11 +47,11 @@ function InitialCondition!(h,R,f_vec)
     R[3]=Numerov6(view(R,1:2), view(f_vec,1:3),h)
 end
 
-function Calc_fvec(q,μ,rmesh,PS::PotSet)
+function Calc_fvec(qc,μ,rmesh,PS::PotSet)
 	f_vec=zeros(Float64,length(rmesh))
 	@. f_vec += -0.25*PS.dh2_2μeff[:]^2/PS.h2_2μeff[:] + 0.5*PS.ddh2_2μeff[:]
 	@. f_vec += PS.U[:] + PS.dh2_2μeff[:]/rmesh[:]
-	@. f_vec -= ħc^2*q^2/(2*μ)
+	@. f_vec -= qc^2/(2*μ)
 	@. f_vec /= -PS.h2_2μeff
 
 	return f_vec
@@ -59,11 +59,11 @@ end
 
 #Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2*q^2/(2μ)
 #Calculate wavefunction and PhaseShift
-function RadWaveFunc(q,μ,rmesh,PS::PotSet)
+function RadWaveFunc(qc,μ,rmesh,PS::PotSet)
     h=rmesh[2]-rmesh[1]
 	N_rmesh=length(rmesh)
 
-	f_vec=Calc_fvec(q,μ,rmesh,PS)
+	f_vec=Calc_fvec(qc,μ,rmesh,PS)
 
     R=zeros(Float64,N_rmesh)
 	InitialCondition!(h,R,f_vec)
@@ -73,9 +73,13 @@ function RadWaveFunc(q,μ,rmesh,PS::PotSet)
     end
 
 	@. R[:]*=(PS.h2_2μeff[:])^(-0.5)
-	#Normalization is needed.
 
-    return State(q,R)
+	#Normalization is needed.
+	#stupid method... may be able to be more faster.
+	norm=findmax(view(R,floor(Int,N_rmesh/2):N_rmesh))[1]
+	@. R[:]/=norm
+
+    return State(qc,R)
 end
 
 export RadWaveFunc

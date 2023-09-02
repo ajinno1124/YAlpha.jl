@@ -10,7 +10,7 @@ module YAlpha
     export CalcPotentials
 
 	include("./YAlphaScattering/CorrelationFunc.jl")
-	using .CoorelationFunc
+	using .CorrelationFunc
 	export LamAlphaWaveFunc
 
 end
