@@ -42,7 +42,7 @@ function InitialCondition()
     return Rin,Rout
 end
 
-#Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ
+#Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2q^2/2μ
 #Calculate wavefunction and PhaseShift
 function WaveFunction(q,potset::PotSet)
     

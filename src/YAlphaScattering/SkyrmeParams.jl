@@ -1,17 +1,24 @@
 module SkyrmeParams
     using CSV, DataFrames
 
-    function read_SkyrmeParam(input_file)
-        df_Lambda = DataFrame(CSV.File(input_file, delim='\t', comment="#"))
-        return df_Lambda
+    function read_SkyrmeParam()
+		input_file="LambdaParameters.dat"
+		if isfile(input_file)==false
+			println("Put LambdaParameters.dat in the run file directory.")
+			exit(1)
+		else
+        	df_Lambda = DataFrame(CSV.File(input_file, delim='\t', comment="#"))
+		end
+		return df_Lambda
     end
 
-    function getaL(df_Lambda::DataFrame,ParameterIndex::Int)
-        params=5
-        aL=zeros(Float64,params)
+	const df_Lambda=read_SkyrmeParam()
+
+    function getaL(ParamIndex::Int)
+        aL=zeros(Float64,5)
         args=["a1","a2","a3","a4","a5"]
         for i=eachindex(args)
-            aL[i]=df_Lambda[ParameterIndex,args[i]]
+            aL[i]=df_Lambda[ParamIndex,args[i]]
         end
 
         return aL

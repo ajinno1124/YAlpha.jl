@@ -4,6 +4,6 @@ const mnMeV=939.5654205
 const mAveMeV=(mpMeV+mnMeV)/2
 const mΛMeV=1115.683 #\pm 0.006 MeV
 const mαMeV=2*mpMeV+2*mnMeV-4*7073.91560 #nudat
-println("alpha mass = $(mαMeV)")
+#println("alpha mass = $(mαMeV)")
 const ħc=197.3269804
 const e2MeVfm=1.4400

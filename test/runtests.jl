@@ -10,11 +10,12 @@ using Test
     Nmesh=1000
     rmesh=0.5*h:h:h*(Nmesh-0.5)
     nu=0.2
-    df_Lambda=read_SkyrmeParam("Lambda Parameters.dat")
-    aL=getaL(df_Lambda,1)
+    df_Lambda=read_SkyrmeParam()
+	ParamIndex=1
+    aL=getaL(ParamIndex)
     @test aL[1]==-500.89
 
-    DensePots=CalcPotentials(rmesh,nu,aL)
+    DensePots=CalcPotentials(rmesh,nu,ParamIndex)
     plot(xlabel="r (fm)", title="LYIV",xlim=(0,3))
     plot!(rmesh,DensePots.ρ,label="ρ")
     plot!(rmesh,DensePots.τ,label="τ")
