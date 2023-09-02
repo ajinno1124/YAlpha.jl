@@ -9,7 +9,7 @@ module LambdaAlphaPot
         ρ::Vector{T}
         τ::Vector{T}
         Lapρ::Vector{T}
-        Ulocal::Vector{T}
+        U_local::Vector{T}
 
         h2_2μeff::Vector{T}
         dh2_2μeff::Vector{T}
@@ -57,13 +57,13 @@ module LambdaAlphaPot
         ρ=Density(rmesh,nuc,A)
         τ=KinDensity(rmesh,ρ,nu,A)
         Lapρ=LapDensity(rmesh,ρ,nuc)
-        Ulocal=U_local(ρ,τ,Lapρ,aL)
+        U_local=U_local(ρ,τ,Lapρ,aL)
 
         h2_2μeff=Calc_h2_2μeff(ρ,aL[2])
         dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
         ddh2_2μeff=MyLib.diff2nd5pt(h,h2_2μeff,1)
 
-        return YAlphaPotentials(rmesh,ρ,τ,Lapρ,Ulocal,h2_2μeff,dh2_2μeff,ddh2_2μeff)
+        return YAlphaPotentials(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
     end
 
     export CalcPotentials

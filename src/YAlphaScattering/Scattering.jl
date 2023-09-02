@@ -7,6 +7,8 @@ end
 
 mutable struct PotSet
     h2_2μeff::Vector{AbstractFloat}
+	dh2_2μeff::Vector{AbstractFloat}
+	ddh2_2μeff::Vector{AbstractFloat}
     U::Vector{AbstractFloat}
 end
 
@@ -44,10 +46,12 @@ end
 
 #Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2q^2/2μ
 #Calculate wavefunction and PhaseShift
-function WaveFunction(q,potset::PotSet)
+function RadWaveFunc(q,potset::PotSet)
     
     return ψ
 end
+
+export RadWaveFunc
 
 function PhaseShift()
 end
