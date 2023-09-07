@@ -16,6 +16,8 @@ mutable struct PotSet
     U::Vector{AbstractFloat}
 end
 
+export PotSet
+
 #######################################
 # Differential Equation AR''+ CR=ER #
 # R=u, R'=v                           #
@@ -39,6 +41,8 @@ function Numerov6(ψ1::Float64,ψ2::Float64,f,h)
 	return val
 end
 
+export Numerov6
+
 function InitialCondition!(h,R,f_vec)
     R[1]=0.5*h
 	# only consider s-wave
@@ -56,6 +60,8 @@ function Calc_fvec(qc,μ,rmesh,PS::PotSet)
 
 	return f_vec
 end
+
+export Calc_fvec
 
 #Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2*q^2/(2μ)
 #Calculate wavefunction and PhaseShift
@@ -76,7 +82,7 @@ function RadWaveFunc(qc,μ,rmesh,PS::PotSet)
 
 	#Normalization is needed.
 	#stupid method... may be able to be more faster.
-	norm=findmax(view(R,floor(Int,N_rmesh/2):N_rmesh))[1]
+	norm=findmax(view(abs.(R),1:N_rmesh))[1]
 	@. R[:]/=norm
 
     return State(qc,R)
@@ -84,7 +90,25 @@ end
 
 export RadWaveFunc
 
-function PhaseShift()
+#=
+function Calc_A(st,rmesh)
 end
+
+function Calc_B(st,rmesh)
+end
+
+function Clac_Smatrix(st,rmesh::AbstractArray)
+	A=Calc_A(st,rmesh)
+	B=Calc_B(st,rmesh)
+	return -B/A
+end
+=#
+
+function PhaseShift(st,rmesh::AbstractArray)
+	N_rmesh=length(rmesh)
+	return (asin(st.ψ[N_rmesh])-st.qc/ħc*rmesh[N_rmesh])/π
+end
+
+export PhaseShift
 
 end

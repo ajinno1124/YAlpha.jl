@@ -9,8 +9,17 @@ module YAlpha
     using .LamAlphaPot
     export CalcPotentials
 
+	#for debugging
+	include("./YAlphaScattering/Scattering.jl")
+	using .Scattering
+	export RadWaveFunc, PotSet, PhaseShift
+
 	include("./YAlphaScattering/CorrelationFunc.jl")
 	using .CorrelationFunc
-	export LamAlphaWaveFunc
+	export LamAlphaWaveFunc, CoorelationFunction
+
+	include("./YAlphaScattering/LamAlphaBoundState.jl")
+	using .LamAlphaBoundState
+	export Calc_LamAlphaBoundState, WronskyEuler
 
 end

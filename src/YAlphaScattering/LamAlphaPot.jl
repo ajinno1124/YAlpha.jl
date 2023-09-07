@@ -46,7 +46,7 @@ module LamAlphaPot
 
     function Calc_h2_2μeff(ρ,a2::Float64)
         meffLam=meff_Lam(ρ,a2)
-        return (@. meffLam*mαMeV/(meffLam + mαMeV))
+        return (@. ħc^2/(2*meffLam*mαMeV/(meffLam + mαMeV)) )
     end
 
     function CalcPotentials(rmesh::AbstractArray,nu,ParamIndex::Int)
