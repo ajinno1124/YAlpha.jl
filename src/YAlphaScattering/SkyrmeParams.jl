@@ -14,7 +14,8 @@ module SkyrmeParams
 		return df_Lambda
     end
 
-	const df_Lambda=read_SkyrmeParam()
+	#const df_Lambda=read_SkyrmeParam()
+	df_Lambda=read_SkyrmeParam()
 
     function getaL(ParamIndex::Int)
         aL=zeros(Float64,5)

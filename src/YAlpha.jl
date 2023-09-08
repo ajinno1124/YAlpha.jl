@@ -24,6 +24,6 @@ module YAlpha
 
 	include("./YAlphaScattering/Output.jl")
 	using .Output
-	export Output_BoundState
+	export Output_BoundState, Output_Potential
 
 end
