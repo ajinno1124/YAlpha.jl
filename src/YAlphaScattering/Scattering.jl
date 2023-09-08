@@ -63,8 +63,14 @@ end
 
 export Calc_fvec
 
+function normfactor(st,rmesh)
+	reA=Re_A(st,rmesh)
+	imA=Im_A(st,rmesh)
+	return (reA^2+imA^2)^(0.5)
+end
+
 #Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2*q^2/(2μ)
-#Calculate wavefunction and PhaseShift
+#Calculate wavefunction
 function RadWaveFunc(qc,μ,rmesh,PS::PotSet)
     h=rmesh[2]-rmesh[1]
 	N_rmesh=length(rmesh)
@@ -82,31 +88,43 @@ function RadWaveFunc(qc,μ,rmesh,PS::PotSet)
 
 	#Normalization is needed.
 	#stupid method... may be able to be more faster.
-	norm=findmax(view(abs.(R),1:N_rmesh))[1]
-	@. R[:]/=norm
+	st=State(qc,R)
+	norm=normfactor(st,rmesh)
+	st.ψ/=norm
 
-    return State(qc,R)
+    return st
 end
 
 export RadWaveFunc
 
-#=
-function Calc_A(st,rmesh)
+
+function Re_A(st,rmesh)
+	N_rmesh=length(rmesh)
+	h=rmesh[2]-rmesh[1]
+
+	val  = st.ψ[N_rmesh]*sin(st.qc/ħc*rmesh[N_rmesh-1])
+	val -= st.ψ[N_rmesh-1]*sin(st.qc/ħc*rmesh[N_rmesh])
+	val /= -2*sin(st.qc/ħc*h)
+	return val
 end
 
-function Calc_B(st,rmesh)
-end
 
-function Clac_Smatrix(st,rmesh::AbstractArray)
-	A=Calc_A(st,rmesh)
-	B=Calc_B(st,rmesh)
-	return -B/A
+function Im_A(st,rmesh)
+	N_rmesh=length(rmesh)
+	h=rmesh[2]-rmesh[1]
+
+	val  = st.ψ[N_rmesh]*cos(st.qc/ħc*rmesh[N_rmesh-1])
+	val -= st.ψ[N_rmesh-1]*cos(st.qc/ħc*rmesh[N_rmesh])
+	val /= 2*sin(st.qc/ħc*h)
+	return val
 end
-=#
 
 function PhaseShift(st,rmesh::AbstractArray)
-	N_rmesh=length(rmesh)
-	return (asin(st.ψ[N_rmesh])-st.qc/ħc*rmesh[N_rmesh])/π
+	#N_rmesh=length(rmesh)
+	#return (asin(st.ψ[N_rmesh])-st.qc/ħc*rmesh[N_rmesh])/π
+	reA=Re_A(st,rmesh)
+	imA=Im_A(st,rmesh)
+	return atan(reA/imA)
 end
 
 export PhaseShift

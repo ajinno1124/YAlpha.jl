@@ -1,8 +1,8 @@
 # nu = 0.27
 # Parameter Index = [1, 2, 3, 4]
 # withmom = true
-ParameterName B.E.(MeV)
-LY4 -2.0047032928466795
-LY4_a3tuned -1.6020820236206053
-HPL2 NaN
-HPL2_a3tuned NaN
+ParameterName	B.E.(MeV)
+LY4	-2.0047032928466795
+LY4_a3tuned	-1.6020820236206053
+HPL2	NaN
+HPL2_a3tuned	NaN

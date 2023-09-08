@@ -33,6 +33,7 @@ function CalcCF(qc,rmesh,nu,ParamIndex,R::AbstractFloat; withmom=true)
 	y=@. exp(-rmesh[:]^2/(4*R^2))
 	@. y*=(st.ψ[:]^2 - (sin(qc/ħc*rmesh[:]))^2)
 	I_source=MyLib.IntTrap(rmesh,y)
+	I_source+=rmesh[1]*y[1]*0.5
 	return 1+I_source/(2*π^0.5*R^3*qc^2/ħc^2)
 end
 

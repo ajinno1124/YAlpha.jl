@@ -33,9 +33,9 @@ using Test
 end
 
 @testset "Scattering" begin
-	qcmesh=100:10:150
+	qcmesh=10:50:200
 	h=0.1
-    N_rmesh=1000
+    N_rmesh=100
 	rmesh=0.5*h:h:h*(N_rmesh-0.5)
     nu=0.2
 	ParamIndex=1
@@ -61,7 +61,7 @@ end
 	end
 	savefig(p3,"ZeroPotential.pdf")
 
-	qcmesh=20:10:300
+	qcmesh=50:50:300
 	p4=plot(xlabel="q [MeV/c]", ylabel="δ/π")
 	δ=zeros(Float64,length(qcmesh))
 	for i=eachindex(qcmesh)

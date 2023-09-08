@@ -7,6 +7,10 @@ include("./SkyrmeParams.jl")
 using .SkyrmeParams
 include("./LamAlphaPot.jl")
 import .LamAlphaPot
+include("./Scattering.jl")
+import .Scattering
+include("./CorrelationFunc.jl")
+import .CorrelationFunc
 
 function PrintHeader(io,rmesh,nu,ParamIndex,withmom)
 	println(io,"# nu = ", nu)
@@ -61,6 +65,51 @@ function Output_Potential(rmesh,nu,ParamIndex)
 	end
 end
 
-export Output_BoundState, Output_Potential
+
+function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex)
+	file_path="data/PhaseShift"
+	rm(file_path,force=true,recursive=true)
+	mkpath(file_path)
+
+	for i=eachindex(ParamIndex)
+		io1=open("$(file_path)/PhaseShift_$(df_Lambda[ParamIndex[i],"ParameterName"]).dat","w")
+		println(io1,"# nu = $(nu)")
+		println(io1,"q(MeV/c)	delta")
+
+		for j=eachindex(qcmesh)
+			state=CorrelationFunc.LamAlphaWaveFunc(qcmesh[j],rmesh,nu,ParamIndex[i])
+			delta=Scattering.PhaseShift(state,rmesh)
+			println(io1,qcmesh[j], "	",delta)
+		end
+
+		close(io1)
+	end
+
+end
+
+function Output_CF(qcmesh,rmesh,nu,ParamIndex,R)
+	file_path="data/CorrelationFunction"
+	rm(file_path,force=true,recursive=true)
+	mkpath(file_path)
+
+	for i=eachindex(ParamIndex)
+		for r in R
+			io1=open("$(file_path)/$(df_Lambda[ParamIndex[i],"ParameterName"])_R$(r).dat","w")
+			println(io1,"# nu = $(nu)")
+			println(io1,"q(MeV/c)	CF")
+
+			C=CorrelationFunc.CoorelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r)
+
+			for j=eachindex(qcmesh)
+				println(io1,qcmesh[j], "	", C[j])
+			end
+
+			close(io1)
+		end
+	end
+
+end
+
+export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF
 
 end

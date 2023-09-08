@@ -130,7 +130,7 @@ function ShootWaveFunc(E,μ,rmesh,PS)
 
     @. R[:]*=(PS.h2_2μeff[:])^(-0.5)
 
-    Norm=NormFactor(rmesh,R) #2 allocation
+    Norm=NormFactor(rmesh,(@. R^2)) #2 allocation
     R*=sign(R[2]-R[1])/Norm
 
     return R
