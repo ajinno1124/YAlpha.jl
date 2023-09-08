@@ -3,7 +3,7 @@ using DataFrames
 using Plots
 using Test
 
-#=
+
 @testset "Potentials" begin
     @test (ħc-197.3269804)<0.1
 
@@ -11,8 +11,9 @@ using Test
     Nmesh=100
     rmesh=0.5*h:h:h*(Nmesh-0.5)
     nu=0.2
-    df_Lambda=read_SkyrmeParam()
-	ParamIndex=1
+    #df_Lambda=read_SkyrmeParam()
+	println(df_Lambda)
+	ParamIndex=11
     aL=getaL(ParamIndex)
     @test aL[1]==-500.89
 
@@ -70,9 +71,7 @@ end
 	p4=plot!(qcmesh,δ)
 	savefig(p4,"PhaseShift.pdf")
 end
-=#
 
-#=
 @testset "CoorelationFunction" begin
 	qcmesh=10.0:10.0:300.0
 	h=0.1
@@ -88,12 +87,11 @@ end
 	for withmom in [true,false]
 		for r in R
 			C=CoorelationFunction(qcmesh,rmesh,nu,Pid,r,withmom=withmom)
-			p1=plot!(qcmesh,C,label="$(df_Lambda[Pid,"Parameter Name"]) R= $r fm")
+			p1=plot!(qcmesh,C,label="$(df_Lambda[Pid,"ParameterName"]) R= $r fm")
 		end
 	end
 	savefig(p1,"CoorelationFunction.pdf")
 end
-=#
 
 @testset "LamAlphaBoundState" begin
 	h=0.1
@@ -107,11 +105,22 @@ end
 
 	p1=plot(xlabel="r [fm]", ylabel="ψ", title="B.E. = $(E) MeV"
 	, left_margin=12Plots.mm, bottom_margin=12Plots.mm)
-	p1=plot!(rmesh,ψ,label="$(df_Lambda[ParamIndex,"Parameter Name"])")
+	p1=plot!(rmesh,ψ,label="$(df_Lambda[ParamIndex,"ParameterName"])")
 	savefig(p1,"BoundState.pdf")
 
 	p2=plot(xlabel="E []", ylabel="ψ", title="B.E. = $(E) MeV"
 	, left_margin=12Plots.mm, bottom_margin=12Plots.mm)
-	p1=plot!(rmesh,ψ,label="$(df_Lambda[ParamIndex,"Parameter Name"])")
+	p1=plot!(rmesh,ψ,label="$(df_Lambda[ParamIndex,"ParameterName"])")
 	savefig(p1,"BoundState.pdf")
+end
+
+
+@testset "Output" begin
+	h=0.1
+    N_rmesh=500
+	rmesh=0.5*h:h:h*(N_rmesh-0.5)
+    nu=0.27
+	ParamIndex=[1,2,3,4]
+
+	Output_BoundState(rmesh,nu,ParamIndex)
 end

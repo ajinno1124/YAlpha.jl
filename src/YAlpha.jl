@@ -22,4 +22,8 @@ module YAlpha
 	using .LamAlphaBoundState
 	export Calc_LamAlphaBoundState, WronskyEuler
 
+	include("./YAlphaScattering/Output.jl")
+	using .Output
+	export Output_BoundState
+
 end

@@ -76,7 +76,7 @@ end
 export WronskyEuler
 
 function FindE(μ,rmesh,PS)
-	Erange=-10.0:5:0.0
+	Erange=-10.01:1.0:-0.01
 	args=[μ,rmesh,PS]
     for i in 1:(length(Erange)-1)
         Eans=MyLib.MyBisect(Erange[i],Erange[i+1],WronskyEuler,args,rtol=1e-6)
@@ -139,7 +139,11 @@ end
 function BoundWaveFunc(μ,rmesh,PS::PotSet)
 	h=rmesh[2]-rmesh[1]
 	E=FindE(μ,rmesh,PS)
-	ψ=ShootWaveFunc(E,μ,rmesh,PS)
+	if isnan(E)==true
+		ψ=fill(NaN,length(rmesh))
+	else
+		ψ=ShootWaveFunc(E,μ,rmesh,PS)
+	end
 	return E,ψ
 end
 
