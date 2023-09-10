@@ -14,13 +14,13 @@ plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['lines.linewidth'] = 2
 plt.rcParams['figure.subplot.bottom'] = 0.15
 
-d1_1=pd.read_csv('../data/CorrelationFunction/Chi3mom_a3tuned_meff_R1.0.dat',delimiter='\t',comment="#")
-d1_3=pd.read_csv('../data/CorrelationFunction/Chi3mom_a3tuned_meff_R3.0.dat',delimiter='\t',comment="#")
-d1_5=pd.read_csv('../data/CorrelationFunction/Chi3mom_a3tuned_meff_R5.0.dat',delimiter='\t',comment="#")
+d1_1=pd.read_csv('./CorrelationFunction/Chi3mom_a3tuned_meff_R1.0.dat',delimiter='\t',comment="#")
+d1_3=pd.read_csv('./CorrelationFunction/Chi3mom_a3tuned_meff_R3.0.dat',delimiter='\t',comment="#")
+d1_5=pd.read_csv('./CorrelationFunction/Chi3mom_a3tuned_meff_R5.0.dat',delimiter='\t',comment="#")
 
-d2_1=pd.read_csv('../data/CorrelationFunction/LY4_a3tuned_meff_R1.0.dat',delimiter='\t',comment="#")
-d2_3=pd.read_csv('../data/CorrelationFunction/LY4_a3tuned_meff_R3.0.dat',delimiter='\t',comment="#")
-d2_5=pd.read_csv('../data/CorrelationFunction/LY4_a3tuned_meff_R5.0.dat',delimiter='\t',comment="#")
+d2_1=pd.read_csv('./CorrelationFunction/LY4_a3tuned_meff_R1.0.dat',delimiter='\t',comment="#")
+d2_3=pd.read_csv('./CorrelationFunction/LY4_a3tuned_meff_R3.0.dat',delimiter='\t',comment="#")
+d2_5=pd.read_csv('./CorrelationFunction/LY4_a3tuned_meff_R5.0.dat',delimiter='\t',comment="#")
 
 fig=plt.figure()
 #subplots_adjust(hspace=0.0,wspace=0.0,left=0.2,right=0.85)
