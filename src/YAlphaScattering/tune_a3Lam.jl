@@ -29,7 +29,7 @@ end
 
 
 function Optimize_a3(E_ans,rmesh,nu,ParamIndex::Int)
-    a3=0.0:5.0:100.0
+    a3=-100.0:20.0:100.0
     aL=SkyrmeParams.getaL(ParamIndex)
     args=(E_ans,rmesh,nu,aL)
 
