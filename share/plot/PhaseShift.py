@@ -14,9 +14,9 @@ plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['lines.linewidth'] = 2
 plt.rcParams['figure.subplot.bottom'] = 0.15
 
-d1=pd.read_csv('./PhaseShift/PhaseShift_Chi2mom_a3tuned_meff.dat',delimiter='\t',comment="#")
-d2=pd.read_csv('./PhaseShift/PhaseShift_Chi3mom_a3tuned_meff.dat',delimiter='\t',comment="#")
-d3=pd.read_csv('./PhaseShift/PhaseShift_LY4_a3tuned_meff.dat',delimiter='\t',comment="#")
+d1=pd.read_csv('../PhaseShift/PhaseShift_Chi2mom_a3tuned_meff.dat',delimiter='\t',comment="#")
+d2=pd.read_csv('../PhaseShift/PhaseShift_Chi3mom_a3tuned_meff.dat',delimiter='\t',comment="#")
+d3=pd.read_csv('../PhaseShift/PhaseShift_LY4_a3tuned_meff.dat',delimiter='\t',comment="#")
 
 fig=plt.figure()
 #subplots_adjust(hspace=0.0,wspace=0.0,left=0.2,right=0.85)
