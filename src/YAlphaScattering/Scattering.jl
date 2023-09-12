@@ -66,7 +66,11 @@ export Calc_fvec
 function normfactor(st,rmesh)
 	reA=Re_A(st,rmesh)
 	imA=Im_A(st,rmesh)
-	return (reA^2+imA^2)^(0.5)
+	return 2*(reA^2+imA^2)^(0.5)
+
+	#reB=Re_B(st,rmesh)
+	#imB=Im_B(st,rmesh)
+	#return (reB^2+imB^2)^(0.5)
 end
 
 #Schrodinger eq. [-∇⋅(ħ^2/2μ*)∇ + U] ψ= Eψ, E=ħ^2*q^2/(2μ)
@@ -119,9 +123,31 @@ function Im_A(st,rmesh)
 	return val
 end
 
+function Re_B(st,rmesh)
+	N_rmesh=length(rmesh)
+	h=rmesh[2]-rmesh[1]
+
+	val  = -st.ψ[N_rmesh]*sin(st.qc/ħc*rmesh[N_rmesh-1])
+	val += st.ψ[N_rmesh-1]*sin(st.qc/ħc*rmesh[N_rmesh])
+	val /= 2*sin(st.qc/ħc*h)
+	return val
+end
+
+
+function Im_B(st,rmesh)
+	N_rmesh=length(rmesh)
+	h=rmesh[2]-rmesh[1]
+
+	val  = -st.ψ[N_rmesh]*cos(st.qc/ħc*rmesh[N_rmesh-1])
+	val -= st.ψ[N_rmesh-1]*cos(st.qc/ħc*rmesh[N_rmesh])
+	val /= 2*sin(st.qc/ħc*h)
+	return val
+end
+
 function PhaseShift(st,rmesh::AbstractArray)
 	#N_rmesh=length(rmesh)
 	#return (asin(st.ψ[N_rmesh])-st.qc/ħc*rmesh[N_rmesh])/π
+
 	reA=Re_A(st,rmesh)
 	imA=Im_A(st,rmesh)
 	return atan(reA/imA)

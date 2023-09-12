@@ -1,0 +1,16 @@
+# nu = 0.2
+# rmesh =0.05:0.1:19.950000000000003
+# Parameter Index = 1:11
+# E_ans = -3.12
+ParameterName	a3	BE(5HeLam)(MeV)	BE-E_ans(MeV)
+LY4	13.48999	-3.12003	-0.00003
+LY4_a3tuned	13.48999	-3.12003	-0.00003
+HPL2	NaN	NaN	NaN
+HPL2_a3tuned	NaN	NaN	NaN
+Chi2mom	38.23486	-3.12003	-0.00003
+Chi2mom_a3tuned	38.23486	-3.12003	-0.00003
+Chi3mom	30.81299	-3.11991	0.00009
+Chi3mom_a3tuned	30.81299	-3.11991	0.00009
+Chi2mom_a3tuned_meff	38.23486	-3.12003	-0.00003
+Chi3mom_a3tuned_meff	30.81299	-3.11991	0.00009
+LY4_a3tuned_meff	13.48999	-3.12003	-0.00003

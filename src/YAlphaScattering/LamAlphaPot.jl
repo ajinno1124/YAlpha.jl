@@ -68,6 +68,24 @@ module LamAlphaPot
         return YAlphaPot(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
     end
 
+    function CalcPotentials(rmesh::AbstractArray,nu,aL::AbstractArray)
+        h=rmesh[2]-rmesh[1]
+        @assert h/2-rmesh[1]<0.00000001
+
+        A=4
+        nuc=GetNuc(nu,A)
+        ρ=Density(rmesh,nuc,A)
+        τ=KinDensity(rmesh,ρ,nu,A)
+        Lapρ=LapDensity(rmesh,ρ,nuc)
+        U_local=Calc_U_local(ρ,τ,Lapρ,aL)
+
+        h2_2μeff=Calc_h2_2μeff(ρ,aL[2])
+        dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
+        ddh2_2μeff=MyLib.diff2nd5pt(h,h2_2μeff,1)
+
+        return YAlphaPot(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
+    end
+
     export CalcPotentials
 
 end

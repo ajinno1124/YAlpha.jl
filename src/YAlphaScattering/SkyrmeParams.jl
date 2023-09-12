@@ -3,13 +3,14 @@ module SkyrmeParams
 
     function read_SkyrmeParam()
 		input_file="LambdaParameters.dat"
+        df_Lambda=DataFrame[]
 		if isfile(input_file)==false
 			println("Put LambdaParameters.dat in the run file directory.")
 			#println("Using sample file in share.")
 			#df_Lambda=DataFrame(CSV.File("../../share/LambdaParameters.dat", delim='\t', comment="#"))
 			exit(1)
 		else
-        	df_Lambda = DataFrame(CSV.File(input_file, delim='\t', comment="#"))
+            df_Lambda = DataFrame(CSV.File(input_file, delim='\t', comment="#"))
 		end
 		return df_Lambda
     end

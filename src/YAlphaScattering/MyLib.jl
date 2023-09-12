@@ -96,7 +96,7 @@ module MyLib
         Fup=F(up,args...)
 
         while abs((low-up)/(low+up)) > rtol
-            if Flow*Fup>0
+            if Flow*Fup>0 || isnan(Flow*Fup)==true
                 return NaN
             else
                 mean=(low+up)/2
