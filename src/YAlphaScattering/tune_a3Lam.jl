@@ -28,9 +28,9 @@ function dev_BE(a3,E_ans,rmesh,nu,aL)
 end
 
 
-function Optimize_a3(E_ans,rmesh,nu,ParamIndex::Int)
+function Optimize_a3(E_ans,rmesh,nu,ParamIndex::Int,df_Lambda)
     a3=-100.0:20.0:100.0
-    aL=SkyrmeParams.getaL(ParamIndex)
+    aL=SkyrmeParams.getaL(df_Lambda,ParamIndex)
     args=(E_ans,rmesh,nu,aL)
 
     for i in 1:length(a3)-1
