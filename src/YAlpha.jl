@@ -3,7 +3,7 @@ module YAlpha
     include("./YAlphaScattering/constants.jl")
     include("./YAlphaScattering/SkyrmeParams.jl")
     using .SkyrmeParams
-    export read_SkyrmeParam,getaL,df_Lambda,ħc
+    export read_SkyrmeParam,getaL_gamma,df_Lambda,ħc
 
     include("./YAlphaScattering/LamAlphaPot.jl")
     using .LamAlphaPot
