@@ -7,18 +7,20 @@ function run_Bound()
 	nu=0.27
 	qcmesh=10:200
 	R=[1.0,3.0,5.0]
-
-	ParamIndex=1:nrow(df_Lambda)
-	println(df_Lambda)
+	input_file="./LambdaParameters.dat"
 
 	E_ans = -3.12
-	#Output_a3opt(E_ans,rmesh,nu,ParamIndex)
-	#Replace_a3(E_ans,rmesh,nu,ParamIndex)
+	ParamIndex=1:8
+	Output_a3opt(E_ans,rmesh,nu,ParamIndex,input_file)
+	Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 
-	Output_BoundState(rmesh,nu,ParamIndex,withmom=true)
-	Output_Potential(rmesh,nu,ParamIndex)
-	Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex)
-	Output_CF(qcmesh,rmesh,nu,ParamIndex,R)
+	input_file2="./LambdaParameters_tunea3.dat"
+	println(read_SkyrmeParam(input_file2))
+
+	Output_BoundState(rmesh,nu,ParamIndex,input_file2,withmom=true)
+	Output_Potential(rmesh,nu,ParamIndex,input_file2)
+	Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file2)
+	Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file2)
 
 end
 

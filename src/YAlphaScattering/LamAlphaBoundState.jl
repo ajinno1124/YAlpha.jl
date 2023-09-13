@@ -147,8 +147,8 @@ function BoundWaveFunc(μ,rmesh,PS::PotSet)
 	return E,ψ
 end
 
-function Calc_LamAlphaBoundState(rmesh,nu,ParamIndex; withmom=true)
-	LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex)
+function Calc_LamAlphaBoundState(rmesh,nu,ParamIndex,df_Lambda; withmom=true)
+	LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex,df_Lambda)
 	μ=mΛMeV*mαMeV/(mΛMeV + mαMeV)
 	if withmom==false
 		LamAPot.h2_2μeff=ħc^2/(2*μ)*ones(Float64,length(rmesh))

@@ -4,9 +4,9 @@ using Printf, CSV, DataFrames
 
 using CSV, DataFrames
 include("./LamAlphaBoundState.jl")
-using .LamAlphaBoundState
+import .LamAlphaBoundState
 include("./SkyrmeParams.jl")
-using .SkyrmeParams
+import .SkyrmeParams
 include("./LamAlphaPot.jl")
 import .LamAlphaPot
 include("./Scattering.jl")
@@ -18,18 +18,20 @@ import .tune_a3Lam
 
 function PrintHeader(io,rmesh,nu,ParamIndex,withmom)
 	println(io,"# nu = ", nu)
-	println(io,"# rmesh =", rmesh)
+	@printf(io,"# rmesh = %1.3f:%1.3f:%1.3f\n", rmesh[1],rmesh[2]-rmesh[1],rmesh[length(rmesh)])
 	println(io,"# Parameter Index = ", ParamIndex)
 	println(io,"# withmom = ", withmom)
 end
 
 function PrintHeader(io,rmesh,nu,ParamIndex)
 	println(io,"# nu = ", nu)
-	println(io,"# rmesh =", rmesh)
+	@printf(io,"# rmesh = %1.3f:%1.3f:%1.3f\n", rmesh[1],rmesh[2]-rmesh[1],rmesh[length(rmesh)])
 	println(io,"# Parameter Index = ", ParamIndex)
 end
 
-function Output_BoundState(rmesh,nu,ParamIndex;withmom=true)
+function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+
 	file_path="data/BoundState"
 	rm(file_path,force=true,recursive=true)
 	mkpath(file_path)
@@ -42,7 +44,7 @@ function Output_BoundState(rmesh,nu,ParamIndex;withmom=true)
 		PrintHeader(io2,rmesh,nu,ParamIndex[i],withmom)
 		println(io2,"r(fm)	u")
 
-		E,ψ=Calc_LamAlphaBoundState(rmesh,nu,ParamIndex[i],withmom=true)
+		E,ψ=LamAlphaBoundState.Calc_LamAlphaBoundState(rmesh,nu,ParamIndex[i],df_Lambda,withmom=true)
 		println(io1,df_Lambda[ParamIndex[i],"ParameterName"], "	", E)
 		for j=eachindex(rmesh)
 			println(io2,rmesh[j], "	", ψ[j])
@@ -53,7 +55,9 @@ function Output_BoundState(rmesh,nu,ParamIndex;withmom=true)
 
 end
 
-function Output_Potential(rmesh,nu,ParamIndex)
+function Output_Potential(rmesh,nu,ParamIndex,input_file)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+
 	file_path="data/Potentials"
 	rm(file_path,force=true,recursive=true)
 	mkpath(file_path)
@@ -63,7 +67,7 @@ function Output_Potential(rmesh,nu,ParamIndex)
 		println(io1,"# nu = $(nu)")
 		println(io1,"r(fm)	U_local(MeV)	U_m(MeV)")
 
-		PS=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex[i])
+		PS=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex[i],df_Lambda)
 		U_m=zeros(Float64,length(rmesh))
 		@. U_m += -0.25*PS.dh2_2μeff[:]^2/PS.h2_2μeff[:] + 0.5*PS.ddh2_2μeff[:]
 		@. U_m += PS.dh2_2μeff[:]/rmesh[:]
@@ -77,7 +81,9 @@ function Output_Potential(rmesh,nu,ParamIndex)
 end
 
 
-function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex)
+function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+
 	file_path="data/PhaseShift"
 	rm(file_path,force=true,recursive=true)
 	mkpath(file_path)
@@ -88,7 +94,7 @@ function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex)
 		println(io1,"q(MeV/c)	delta")
 
 		for j=eachindex(qcmesh)
-			state=CorrelationFunc.LamAlphaWaveFunc(qcmesh[j],rmesh,nu,ParamIndex[i])
+			state=CorrelationFunc.LamAlphaWaveFunc(qcmesh[j],rmesh,nu,ParamIndex[i],df_Lambda)
 			delta=Scattering.PhaseShift(state,rmesh)
 			println(io1,qcmesh[j], "	",delta)
 		end
@@ -98,7 +104,9 @@ function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex)
 
 end
 
-function Output_CF(qcmesh,rmesh,nu,ParamIndex,R)
+function Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+
 	file_path="data/CorrelationFunction"
 	rm(file_path,force=true,recursive=true)
 	mkpath(file_path)
@@ -109,7 +117,7 @@ function Output_CF(qcmesh,rmesh,nu,ParamIndex,R)
 			println(io1,"# nu = $(nu)")
 			println(io1,"q(MeV/c)	CF")
 
-			C=CorrelationFunc.CoorelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r)
+			C=CorrelationFunc.CoorelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r,df_Lambda)
 
 			for j=eachindex(qcmesh)
 				println(io1,qcmesh[j], "	", C[j])
@@ -122,7 +130,11 @@ function Output_CF(qcmesh,rmesh,nu,ParamIndex,R)
 end
 
 
-function Output_a3opt(E_ans,rmesh,nu,ParamIndex)    
+function Output_a3opt(E_ans,rmesh,nu,ParamIndex,input_file)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+	#println("df_Lambda for a3")
+	#println(df_Lambda)
+
     io1=open("a3.dat","w")
     PrintHeader(io1,rmesh,nu,ParamIndex)
 	println(io1,"# E_ans = ",E_ans)
@@ -130,8 +142,8 @@ function Output_a3opt(E_ans,rmesh,nu,ParamIndex)
 	println(io1,"ParameterName	a3	BE(5HeLam)(MeV)	BE-E_ans(MeV)")
 
     for i=eachindex(ParamIndex)
-		a3_opt=tune_a3Lam.Optimize_a3(E_ans,rmesh,nu,ParamIndex[i])
-		aL=SkyrmeParams.getaL(ParamIndex[i])
+		a3_opt=tune_a3Lam.Optimize_a3(E_ans,rmesh,nu,ParamIndex[i],df_Lambda)
+		aL=SkyrmeParams.getaL(df_Lambda,ParamIndex[i])
 		BE=tune_a3Lam.Calc_BE_a3(a3_opt,rmesh,nu,aL)
 
 		@printf(io1,"%s\t",df_Lambda[ParamIndex[i],"ParameterName"])
@@ -144,7 +156,8 @@ function Output_a3opt(E_ans,rmesh,nu,ParamIndex)
 
 end
 
-function Replace_a3(E_ans,rmesh,nu,ParamIndex)
+function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
 	df_a3=DataFrame(CSV.File("a3.dat", delim='\t', comment="#"))
 	println(df_a3)
 
@@ -164,6 +177,8 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex)
 		@printf(io1,"%1.5f\t",df_a3[ParamIndex[i],"BE(5HeLam)(MeV)"])
 		@printf(io1,"%1.5f\n",df_a3[ParamIndex[i],"BE-E_ans(MeV)"])
 	end
+
+	close(io1)
 end
 
 export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3

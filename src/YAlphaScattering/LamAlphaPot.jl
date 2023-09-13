@@ -49,8 +49,8 @@ module LamAlphaPot
         return (@. ħc^2/(2*meffLam*mαMeV/(meffLam + mαMeV)) )
     end
 
-    function CalcPotentials(rmesh::AbstractArray,nu,ParamIndex::Int)
-		aL=SkyrmeParams.getaL(ParamIndex)
+    function CalcPotentials(rmesh::AbstractArray,nu,ParamIndex::Int,df_Lambda)
+		aL=SkyrmeParams.getaL(df_Lambda,ParamIndex)
         h=rmesh[2]-rmesh[1]
         @assert h/2-rmesh[1]<0.00000001
 

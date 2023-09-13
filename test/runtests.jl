@@ -3,6 +3,7 @@ using DataFrames
 using Plots
 using Test
 
+const df_Lambda=read_SkyrmeParam("LambdaParameters.dat")
 
 @testset "Potentials" begin
     @test (ħc-197.3269804)<0.1
@@ -14,10 +15,10 @@ using Test
     #df_Lambda=read_SkyrmeParam()
 	println(df_Lambda)
 	ParamIndex=11
-    aL=getaL(ParamIndex)
+    aL=getaL(df_Lambda,ParamIndex)
     @test aL[1]==-500.89
 
-    DensePots=CalcPotentials(rmesh,nu,ParamIndex)
+    DensePots=CalcPotentials(rmesh,nu,ParamIndex,df_Lambda)
     plot(xlabel="r (fm)", title="LYIV",xlim=(0,3))
     plot!(rmesh,DensePots.ρ,label="ρ")
     plot!(rmesh,DensePots.τ,label="τ")
@@ -42,7 +43,7 @@ end
 
 	p1=plot(xlabel="r", ylabel="χ",title="Parameter=$ParamIndex")
 	for i=eachindex(qcmesh)
-		state=LamAlphaWaveFunc(qcmesh[i],rmesh,nu,ParamIndex)
+		state=LamAlphaWaveFunc(qcmesh[i],rmesh,nu,ParamIndex,df_Lambda)
 		p1=plot!(rmesh,state.ψ,label="q=$(state.qc) [MeV/c]")
 	end
 	savefig(p1,"LamAlphaWaveFunc.pdf")
@@ -65,7 +66,7 @@ end
 	p4=plot(xlabel="q [MeV/c]", ylabel="δ/π")
 	δ=zeros(Float64,length(qcmesh))
 	for i=eachindex(qcmesh)
-		state=LamAlphaWaveFunc(qcmesh[i],rmesh,nu,ParamIndex)
+		state=LamAlphaWaveFunc(qcmesh[i],rmesh,nu,ParamIndex,df_Lambda)
 		δ[i]=PhaseShift(state,rmesh)
 	end
 	p4=plot!(qcmesh,δ)
@@ -80,13 +81,13 @@ end
     nu=0.27
 	Pid=2
 	R=[1.0,3.0,5.0]
-	df_Lambda=read_SkyrmeParam()
+	#df_Lambda=read_SkyrmeParam()
 
 	p1=plot(xlabel="q [MeV/c]", ylabel="C(q)", title="ν=$(nu)"
 	, left_margin=12Plots.mm, bottom_margin=12Plots.mm)
 	for withmom in [true,false]
 		for r in R
-			C=CoorelationFunction(qcmesh,rmesh,nu,Pid,r,withmom=withmom)
+			C=CoorelationFunction(qcmesh,rmesh,nu,Pid,r,df_Lambda,withmom=withmom)
 			p1=plot!(qcmesh,C,label="$(df_Lambda[Pid,"ParameterName"]) R= $r fm")
 		end
 	end
@@ -99,9 +100,9 @@ end
 	rmesh=0.5*h:h:h*(N_rmesh-0.5)
     nu=0.27
 	ParamIndex=2
-	df_Lambda=read_SkyrmeParam()
+	#df_Lambda=read_SkyrmeParam()
 
-	E,ψ=Calc_LamAlphaBoundState(rmesh,nu,ParamIndex,withmom=true)
+	E,ψ=Calc_LamAlphaBoundState(rmesh,nu,ParamIndex,df_Lambda,withmom=true)
 
 	p1=plot(xlabel="r [fm]", ylabel="ψ", title="B.E. = $(E) MeV"
 	, left_margin=12Plots.mm, bottom_margin=12Plots.mm)
@@ -122,5 +123,5 @@ end
     nu=0.27
 	ParamIndex=[1,2,3,4]
 
-	Output_BoundState(rmesh,nu,ParamIndex)
+	Output_BoundState(rmesh,nu,ParamIndex,"LambdaParameters.dat")
 end
