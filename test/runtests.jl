@@ -15,7 +15,7 @@ const df_Lambda=read_SkyrmeParam("LambdaParameters.dat")
     #df_Lambda=read_SkyrmeParam()
 	println(df_Lambda)
 	ParamIndex=11
-    aL=getaL(df_Lambda,ParamIndex)
+    aL,γ=getaL_gamma(df_Lambda,ParamIndex)
     @test aL[1]==-500.89
 
     DensePots=CalcPotentials(rmesh,nu,ParamIndex,df_Lambda)

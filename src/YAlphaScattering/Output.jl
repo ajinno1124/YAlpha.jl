@@ -143,8 +143,8 @@ function Output_a3opt(E_ans,rmesh,nu,ParamIndex,input_file)
 
     for i=eachindex(ParamIndex)
 		a3_opt=tune_a3Lam.Optimize_a3(E_ans,rmesh,nu,ParamIndex[i],df_Lambda)
-		aL=SkyrmeParams.getaL(df_Lambda,ParamIndex[i])
-		BE=tune_a3Lam.Calc_BE_a3(a3_opt,rmesh,nu,aL)
+		aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex[i])
+		BE=tune_a3Lam.Calc_BE_a3(a3_opt,rmesh,nu,aL,γ)
 
 		@printf(io1,"%s\t",df_Lambda[ParamIndex[i],"ParameterName"])
 		@printf(io1,"%1.5f\t",a3_opt)
@@ -165,7 +165,7 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 	PrintHeader(io1,rmesh,nu,ParamIndex)
 	println(io1,"# E_ans = ",E_ans)
 
-	println(io1,"ParameterName	a1	a2	a3	a4	a5	BE(5He_Lam)	BE-E_ans(MeV)")
+	println(io1,"ParameterName	a1	a2	a3	a4	a5	gamma1	gamma2	BE(5He_Lam)	BE-E_ans(MeV)")
 
 	for i=eachindex(ParamIndex)
 		@printf(io1,"%s\t",df_Lambda[ParamIndex[i],"ParameterName"])
@@ -174,6 +174,8 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 		@printf(io1,"%1.5f\t",df_a3[ParamIndex[i],"a3"])
 		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"a4"])
 		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"a5"])
+		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"gamma1"])
+		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"gamma2"])
 		@printf(io1,"%1.5f\t",df_a3[ParamIndex[i],"BE(5HeLam)(MeV)"])
 		@printf(io1,"%1.5f\n",df_a3[ParamIndex[i],"BE-E_ans(MeV)"])
 	end

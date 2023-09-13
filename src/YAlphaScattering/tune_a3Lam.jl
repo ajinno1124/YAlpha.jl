@@ -13,25 +13,25 @@ include("./MyLib.jl")
 import .MyLib
 
 
-function Calc_BE_a3(a3::Float64,rmesh,nu,aL)
+function Calc_BE_a3(a3::Float64,rmesh,nu,aL,γ)
     aL[3]=a3
-    LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,aL)
+    LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,aL,γ)
 	μ=mΛMeV*mαMeV/(mΛMeV + mαMeV)
 	PS=Scattering.PotSet(LamAPot.h2_2μeff, LamAPot.dh2_2μeff, LamAPot.ddh2_2μeff, LamAPot.U_local)
     E=LamAlphaBoundState.FindE(μ,rmesh,PS)
     return E
 end
 
-function dev_BE(a3,E_ans,rmesh,nu,aL)
-    E_cal=Calc_BE_a3(a3,rmesh,nu,aL)
+function dev_BE(a3,E_ans,rmesh,nu,aL,γ)
+    E_cal=Calc_BE_a3(a3,rmesh,nu,aL,γ)
     return E_cal-E_ans
 end
 
 
 function Optimize_a3(E_ans,rmesh,nu,ParamIndex::Int,df_Lambda)
     a3=-100.0:20.0:100.0
-    aL=SkyrmeParams.getaL(df_Lambda,ParamIndex)
-    args=(E_ans,rmesh,nu,aL)
+    aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex)
+    args=(E_ans,rmesh,nu,aL,γ)
 
     for i in 1:length(a3)-1
         a3_opt=MyLib.MyBisect(a3[i], a3[i+1], dev_BE, args)

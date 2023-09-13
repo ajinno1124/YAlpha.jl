@@ -34,9 +34,9 @@ module LamAlphaPot
         return (@. -4*nuc*(3-4*nuc*r^2)*ρ)
     end
 
-    function Calc_U_local(ρ,τ,Lapρ,aL)
+    function Calc_U_local(ρ,τ,Lapρ,aL,γ)
         U=zeros(Float64,length(ρ))
-        @. U=aL[1]*ρ + aL[2]*τ - aL[3]*Lapρ + aL[4]*ρ^(4/3) + aL[5]*ρ^(5/3)
+        @. U=aL[1]*ρ + aL[2]*τ - aL[3]*Lapρ + aL[4]*ρ^(1+γ[1]) + aL[5]*ρ^(1+γ[2])
         return U
     end
 
@@ -50,7 +50,7 @@ module LamAlphaPot
     end
 
     function CalcPotentials(rmesh::AbstractArray,nu,ParamIndex::Int,df_Lambda)
-		aL=SkyrmeParams.getaL(df_Lambda,ParamIndex)
+		aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex)
         h=rmesh[2]-rmesh[1]
         @assert h/2-rmesh[1]<0.00000001
 
@@ -59,7 +59,7 @@ module LamAlphaPot
         ρ=Density(rmesh,nuc,A)
         τ=KinDensity(rmesh,ρ,nu,A)
         Lapρ=LapDensity(rmesh,ρ,nuc)
-        U_local=Calc_U_local(ρ,τ,Lapρ,aL)
+        U_local=Calc_U_local(ρ,τ,Lapρ,aL,γ)
 
         h2_2μeff=Calc_h2_2μeff(ρ,aL[2])
         dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
@@ -68,7 +68,7 @@ module LamAlphaPot
         return YAlphaPot(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
     end
 
-    function CalcPotentials(rmesh::AbstractArray,nu,aL::AbstractArray)
+    function CalcPotentials(rmesh::AbstractArray,nu,aL::AbstractArray,γ)
         h=rmesh[2]-rmesh[1]
         @assert h/2-rmesh[1]<0.00000001
 
@@ -77,7 +77,7 @@ module LamAlphaPot
         ρ=Density(rmesh,nuc,A)
         τ=KinDensity(rmesh,ρ,nu,A)
         Lapρ=LapDensity(rmesh,ρ,nuc)
-        U_local=Calc_U_local(ρ,τ,Lapρ,aL)
+        U_local=Calc_U_local(ρ,τ,Lapρ,aL,γ)
 
         h2_2μeff=Calc_h2_2μeff(ρ,aL[2])
         dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
