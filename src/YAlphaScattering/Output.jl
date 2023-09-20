@@ -65,7 +65,7 @@ function Output_Potential(rmesh,nu,ParamIndex,input_file)
 	for i=eachindex(ParamIndex)
 		io1=open("$(file_path)/Potential_$(df_Lambda[i,"ParameterName"]).dat","w")
 		println(io1,"# nu = $(nu)")
-		println(io1,"r(fm)	U_local(MeV)	U_m(MeV)")
+		println(io1,"r(fm)	U_local(MeV)	U_m(MeV)	h2_2mueff(MeV)")
 
 		PS=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex[i],df_Lambda)
 		U_m=zeros(Float64,length(rmesh))
@@ -73,7 +73,7 @@ function Output_Potential(rmesh,nu,ParamIndex,input_file)
 		@. U_m += PS.dh2_2μeff[:]/rmesh[:]
 
 		for j=eachindex(rmesh)
-			println(io1,rmesh[j], "	", PS.U_local[j], "	", U_m[j])
+			println(io1,rmesh[j], "	", PS.U_local[j], "	", U_m[j],"	",PS.h2_2μeff[j])
 		end
 
 		close(io1)
