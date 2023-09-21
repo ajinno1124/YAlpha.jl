@@ -26,5 +26,6 @@ module YAlpha
 	using .Output
 	export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3
 
-
+	include("./Fitting/FittingSkyrme.jl")
+	export Fit_Ulocal, OutputFitResult
 end

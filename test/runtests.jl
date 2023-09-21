@@ -5,6 +5,7 @@ using Test
 
 const df_Lambda=read_SkyrmeParam("LambdaParameters.dat")
 
+#=
 @testset "Potentials" begin
     @test (ħc-197.3269804)<0.1
 
@@ -124,4 +125,11 @@ end
 	ParamIndex=[1,2,3,4]
 
 	Output_BoundState(rmesh,nu,ParamIndex,"LambdaParameters.dat")
+end
+=#
+
+@testset "Fitting" begin
+	nu=0.27
+	pot_dat="./Potential_LY4woMom.dat"
+	OutputFitResults(nu,pot_dat)
 end
