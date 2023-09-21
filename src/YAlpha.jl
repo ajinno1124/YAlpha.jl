@@ -7,7 +7,7 @@ module YAlpha
 
     include("./YAlphaScattering/LamAlphaPot.jl")
     using .LamAlphaPot
-    export CalcPotentials
+    export CalcPotentials, GaussianPot
 
 	#for debugging
 	include("./YAlphaScattering/Scattering.jl")
@@ -27,5 +27,7 @@ module YAlpha
 	export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3
 
 	include("./Fitting/FittingSkyrme.jl")
+	using .FittingSkyrme
 	export Fit_Ulocal, OutputFitResult
+
 end

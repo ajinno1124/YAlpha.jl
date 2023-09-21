@@ -131,5 +131,5 @@ end
 @testset "Fitting" begin
 	nu=0.27
 	pot_dat="./Potential_LY4woMom.dat"
-	OutputFitResults(nu,pot_dat)
+	OutputFitResult(nu,pot_dat)
 end

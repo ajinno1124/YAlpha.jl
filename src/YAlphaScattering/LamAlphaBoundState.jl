@@ -147,8 +147,8 @@ function BoundWaveFunc(μ,rmesh,PS::PotSet)
 	return E,ψ
 end
 
-function Calc_LamAlphaBoundState(rmesh,nu,ParamIndex,df_Lambda; withmom=true)
-	LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex,df_Lambda)
+function Calc_LamAlphaBoundState(rmesh,nu,ParamIndex,df_Lambda; withmom=true, Gauss=false)
+	LamAPot=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex,df_Lambda,Gauss=Gauss)
 	μ=mΛMeV*mαMeV/(mΛMeV + mαMeV)
 	if withmom==false
 		LamAPot.h2_2μeff=ħc^2/(2*μ)*ones(Float64,length(rmesh))
@@ -157,6 +157,13 @@ function Calc_LamAlphaBoundState(rmesh,nu,ParamIndex,df_Lambda; withmom=true)
 	end
 	PS=Scattering.PotSet(LamAPot.h2_2μeff, LamAPot.dh2_2μeff, LamAPot.ddh2_2μeff, LamAPot.U_local)
 	return BoundWaveFunc(μ,rmesh,PS)
+end
+
+function DistributionSize(rmesh::AbstractArray,ψ::AbstractArray)
+    r=MyLib.IntTrap(rmesh,(@. rmesh[:]^2*ψ[:]^2))
+    r+=0.5*rmesh[1]^2*ψ[1]^2
+    r=sqrt(r)
+    return r
 end
 
 export Calc_LamAlphaBoundState

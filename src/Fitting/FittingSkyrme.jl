@@ -1,7 +1,8 @@
 module FittingSkyrme
 
-using LsqFit
-include("../YALphaScattering/LamAlphaPot.jl")
+using LsqFit, Printf
+using CSV, DataFrames
+include("../YAlphaScattering/LamAlphaPot.jl")
 import .LamAlphaPot
 
 
@@ -19,9 +20,9 @@ function Calc_args(rmesh,nu)
 	return [ρ,τ,Lapρ,γ]
 end
 
-function Calc_U_local_woMom(i::Int,aL,ρ,τ,Lapρ,γ)
-	U=0.0
-	U+=aL[1]*ρ[i] - aL[2]*Lapρ[i] + aL[3]*ρ[i]^(1+γ[1]) + aL[4]*ρ[i]^(1+γ[2]) #without aL2
+function Calc_U_local_woMom(i,aL,ρ,τ,Lapρ,γ)
+	U=zeros(Float64,length(i))
+	@. U+=aL[1]*ρ[:] - aL[2]*Lapρ[:] + aL[3]*ρ[:]^(1+γ[1]) + aL[4]*ρ[:]^(1+γ[2]) #without aL2
 	return U
 end
 

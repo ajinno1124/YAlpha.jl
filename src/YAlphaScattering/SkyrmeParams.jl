@@ -30,7 +30,24 @@ function getaL_gamma(df_Lambda,ParamIndex::Int)
 
 end
 
-export getaL_gamma, read_SkyrmeParam
+function get_GaussVa(df_Lambda,ParamIndex::Int)
+    num=3
+    Vi=zeros(Float64,num)
+    ai=zeros(Float64,num)
+    args1=["V1","V2","V3"]
+    args2=["a1","a2","a3"]
+    for i=eachindex(args1)
+        Vi[i]=df_Lambda[ParamIndex,args1[i]]
+    end
+    for i=eachindex(args2)
+        ai[i]=df_Lambda[ParamIndex,args2[i]]
+    end
+
+    return Vi,ai
+
+end
+
+export getaL_gamma, read_SkyrmeParam, get_GaussVa
 
 
 end

@@ -49,23 +49,28 @@ module LamAlphaPot
         return (@. ħc^2/(2*meffLam*mαMeV/(meffLam + mαMeV)) )
     end
 
-    function CalcPotentials(rmesh::AbstractArray,nu,ParamIndex::Int,df_Lambda)
-		aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex)
-        h=rmesh[2]-rmesh[1]
-        @assert h/2-rmesh[1]<0.00000001
+    function CalcPotentials(rmesh::AbstractArray,nu,ParamIndex::Int,df_Lambda; Gauss=false)
+        if Gauss==false
+            aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex)
+            h=rmesh[2]-rmesh[1]
+            @assert h/2-rmesh[1]<0.00000001
 
-        A=4
-        nuc=GetNuc(nu,A)
-        ρ=Density(rmesh,nuc,A)
-        τ=KinDensity(rmesh,ρ,nu,A)
-        Lapρ=LapDensity(rmesh,ρ,nuc)
-        U_local=Calc_U_local(ρ,τ,Lapρ,aL,γ)
+            A=4
+            nuc=GetNuc(nu,A)
+            ρ=Density(rmesh,nuc,A)
+            τ=KinDensity(rmesh,ρ,nu,A)
+            Lapρ=LapDensity(rmesh,ρ,nuc)
+            U_local=Calc_U_local(ρ,τ,Lapρ,aL,γ)
 
-        h2_2μeff=Calc_h2_2μeff(ρ,aL[2])
-        dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
-        ddh2_2μeff=MyLib.diff2nd5pt(h,h2_2μeff,1)
+            h2_2μeff=Calc_h2_2μeff(ρ,aL[2])
+            dh2_2μeff=MyLib.diff1st5pt(h,h2_2μeff,1)
+            ddh2_2μeff=MyLib.diff2nd5pt(h,h2_2μeff,1)
 
-        return YAlphaPot(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
+            return YAlphaPot(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
+        else
+            Vi, ai=SkyrmeParams.get_GaussVa(df_Lambda,ParamIndex)
+            return GaussianPot(rmesh,nu,Vi,ai)
+        end
     end
 
     function CalcPotentials(rmesh::AbstractArray,nu,aL::AbstractArray,γ)
@@ -86,6 +91,24 @@ module LamAlphaPot
         return YAlphaPot(rmesh,ρ,τ,Lapρ,U_local,h2_2μeff,dh2_2μeff,ddh2_2μeff)
     end
 
-    export CalcPotentials
+    function GaussianPot(rmesh::AbstractArray,nu,Vi::AbstractArray,ai::AbstractArray)
+        V=zeros(Float64,length(rmesh))
+        for i=eachindex(Vi)
+            @. V+=Vi[i]*exp(-(rmesh[:]/ai[i])^2)
+        end
+        a0=zeros(Float64,length(rmesh))
+
+        A=4
+        nuc=GetNuc(nu,A)
+        ρ=Density(rmesh,nuc,A)
+        τ=KinDensity(rmesh,ρ,nu,A)
+        Lapρ=LapDensity(rmesh,ρ,nuc)
+
+        h2_2μeff=Calc_h2_2μeff(ρ,0.0)
+
+        return YAlphaPot(rmesh,ρ,τ,Lapρ,V,h2_2μeff,a0,a0)
+    end
+
+    export CalcPotentials, GaussianPot
 
 end

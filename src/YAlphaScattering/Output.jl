@@ -29,7 +29,7 @@ function PrintHeader(io,rmesh,nu,ParamIndex)
 	println(io,"# Parameter Index = ", ParamIndex)
 end
 
-function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true)
+function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true, Gauss=false)
 	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
 
 	file_path="data/BoundState"
@@ -44,7 +44,9 @@ function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true)
 		PrintHeader(io2,rmesh,nu,ParamIndex[i],withmom)
 		println(io2,"r(fm)	u")
 
-		E,ψ=LamAlphaBoundState.Calc_LamAlphaBoundState(rmesh,nu,ParamIndex[i],df_Lambda,withmom=true)
+		E,ψ=LamAlphaBoundState.Calc_LamAlphaBoundState(rmesh,nu,ParamIndex[i],df_Lambda,withmom=true,Gauss=Gauss)
+		r=LamAlphaBoundState.DistributionSize(rmesh,ψ)
+		println(io1,"# distribution size r = $r fm")
 		println(io1,df_Lambda[ParamIndex[i],"ParameterName"], "	", E)
 		for j=eachindex(rmesh)
 			println(io2,rmesh[j], "	", ψ[j])
@@ -55,7 +57,7 @@ function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true)
 
 end
 
-function Output_Potential(rmesh,nu,ParamIndex,input_file)
+function Output_Potential(rmesh,nu,ParamIndex,input_file; Gauss=false)
 	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
 
 	file_path="data/Potentials"
@@ -67,7 +69,7 @@ function Output_Potential(rmesh,nu,ParamIndex,input_file)
 		println(io1,"# nu = $(nu)")
 		println(io1,"r(fm)	U_local(MeV)	U_m(MeV)	h2_2mueff(MeV)")
 
-		PS=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex[i],df_Lambda)
+		PS=LamAlphaPot.CalcPotentials(rmesh,nu,ParamIndex[i],df_Lambda, Gauss=Gauss)
 		U_m=zeros(Float64,length(rmesh))
 		@. U_m += -0.25*PS.dh2_2μeff[:]^2/PS.h2_2μeff[:] + 0.5*PS.ddh2_2μeff[:]
 		@. U_m += PS.dh2_2μeff[:]/rmesh[:]
@@ -81,7 +83,7 @@ function Output_Potential(rmesh,nu,ParamIndex,input_file)
 end
 
 
-function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file)
+function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file; Gauss=false)
 	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
 
 	file_path="data/PhaseShift"
@@ -94,7 +96,7 @@ function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file)
 		println(io1,"q(MeV/c)	delta")
 
 		for j=eachindex(qcmesh)
-			state=CorrelationFunc.LamAlphaWaveFunc(qcmesh[j],rmesh,nu,ParamIndex[i],df_Lambda)
+			state=CorrelationFunc.LamAlphaWaveFunc(qcmesh[j],rmesh,nu,ParamIndex[i],df_Lambda, Gauss=Gauss)
 			delta=Scattering.PhaseShift(state,rmesh)
 			println(io1,qcmesh[j], "	",delta)
 		end
@@ -104,7 +106,7 @@ function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file)
 
 end
 
-function Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file)
+function Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file; Gauss=false)
 	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
 
 	file_path="data/CorrelationFunction"
@@ -117,7 +119,7 @@ function Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file)
 			println(io1,"# nu = $(nu)")
 			println(io1,"q(MeV/c)	CF")
 
-			C=CorrelationFunc.CoorelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r,df_Lambda)
+			C=CorrelationFunc.CoorelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r,df_Lambda,Gauss=Gauss)
 
 			for j=eachindex(qcmesh)
 				println(io1,qcmesh[j], "	", C[j])
