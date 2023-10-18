@@ -153,6 +153,21 @@ function PhaseShift(st,rmesh::AbstractArray)
 	return atan(reA/imA)
 end
 
+function EffRangeExp(delta,qcmesh)
+	q1=qcmesh[1]
+	q2=qcmesh[2]
+	d1=delta[1]
+	d2=delta[2]
+
+	a0   = (q1^2-q2^2)/(q2^2*q1*cot(d1) - q1^2*q2*cot(d2))
+	reff = 2*(q2*cot(d2) - q1*cot(d1))/(q2^2-q1^2)
+
+	a0   *= ħc
+	reff *= ħc
+
+	return a0,reff
+end
+
 export PhaseShift
 
 end

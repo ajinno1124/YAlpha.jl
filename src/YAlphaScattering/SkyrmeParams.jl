@@ -31,16 +31,16 @@ function getaL_gamma(df_Lambda,ParamIndex::Int)
 end
 
 function get_GaussVa(df_Lambda,ParamIndex::Int)
-    num=3
+    #num=3
+    num=round(Int,(ncol(df_Lambda)-1)/2)
+    #print(num)
     Vi=zeros(Float64,num)
     ai=zeros(Float64,num)
-    args1=["V1","V2","V3"]
-    args2=["a1","a2","a3"]
-    for i=eachindex(args1)
-        Vi[i]=df_Lambda[ParamIndex,args1[i]]
-    end
-    for i=eachindex(args2)
-        ai[i]=df_Lambda[ParamIndex,args2[i]]
+    #args1=["V1","V2","V3"]
+    #args2=["a1","a2","a3"]
+    for i in 1:num
+        Vi[i]=df_Lambda[ParamIndex,"V$(i)"]
+        ai[i]=df_Lambda[ParamIndex,"a$(i)"]
     end
 
     return Vi,ai

@@ -90,6 +90,11 @@ function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file; Gauss=false)
 	rm(file_path,force=true,recursive=true)
 	mkpath(file_path)
 
+	io=open("$(file_path)/EffRangeExp.dat","w")
+	println(io,"ParameterName	a0(fm)	reff(fm)")
+
+	delta12 = zeros(Float64,2)
+
 	for i=eachindex(ParamIndex)
 		io1=open("$(file_path)/PhaseShift_$(df_Lambda[ParamIndex[i],"ParameterName"]).dat","w")
 		println(io1,"# nu = $(nu)")
@@ -98,11 +103,23 @@ function Output_PhaseShift(qcmesh,rmesh,nu,ParamIndex,input_file; Gauss=false)
 		for j=eachindex(qcmesh)
 			state=CorrelationFunc.LamAlphaWaveFunc(qcmesh[j],rmesh,nu,ParamIndex[i],df_Lambda, Gauss=Gauss)
 			delta=Scattering.PhaseShift(state,rmesh)
+
+			if j==1
+				delta12[1]=delta
+			elseif j==2
+				delta12[2]=delta
+			end
+
 			println(io1,qcmesh[j], "	",delta)
 		end
 
 		close(io1)
+
+		a0,reff=Scattering.EffRangeExp(delta12,qcmesh)
+		println(io,df_Lambda[ParamIndex[i],"ParameterName"],"\t",a0,"\t",reff)
 	end
+
+	close(io)
 
 end
 
