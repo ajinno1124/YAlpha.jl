@@ -136,7 +136,7 @@ function Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file; Gauss=false)
 			println(io1,"# nu = $(nu)")
 			println(io1,"q(MeV/c)	CF")
 
-			C=CorrelationFunc.CoorelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r,df_Lambda,Gauss=Gauss)
+			C=CorrelationFunc.CorrelationFunction(qcmesh,rmesh,nu,ParamIndex[i],r,df_Lambda,Gauss=Gauss)
 
 			for j=eachindex(qcmesh)
 				println(io1,qcmesh[j], "	", C[j])
@@ -146,6 +146,31 @@ function Output_CF(qcmesh,rmesh,nu,ParamIndex,R,input_file; Gauss=false)
 		end
 	end
 
+end
+
+function Output_LL(qcmesh,ParamIndex,R,input_file;S1=true)
+	df_a0reff=DataFrame(CSV.File(input_file,comment="#"))
+	file_path="data/CorrelationFunction/LL_S1"
+	rm(file_path,force=true,recursive=true)
+	mkpath(file_path)
+	if S1==true
+		for i=eachindex(ParamIndex)
+			for r in R
+				io1=open("$(file_path)/$(df_a0reff[ParamIndex[i],"ParameterName"])_R$(r)_LL.dat","w")
+				println(io1,"q(MeV/c)	CF")
+
+				a0   = df_a0reff[ParamIndex[i],"a0(fm)"]
+				reff = df_a0reff[ParamIndex[i],"reff(fm)"]
+				C=CorrelationFunc.LLformula_S1(qcmesh,a0,reff,r)
+
+				for j=eachindex(qcmesh)
+					println(io1,qcmesh[j], "	", C[j])
+				end
+	
+				close(io1)
+			end
+		end
+	end
 end
 
 
@@ -202,6 +227,6 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 	close(io1)
 end
 
-export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3
+export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3, Output_LL
 
 end

@@ -16,7 +16,7 @@ module YAlpha
 
 	include("./YAlphaScattering/CorrelationFunc.jl")
 	using .CorrelationFunc
-	export LamAlphaWaveFunc, CoorelationFunction
+	export LamAlphaWaveFunc, CorrelationFunction, LLformula_S1
 
 	include("./YAlphaScattering/LamAlphaBoundState.jl")
 	using .LamAlphaBoundState
@@ -24,7 +24,7 @@ module YAlpha
 
 	include("./YAlphaScattering/Output.jl")
 	using .Output
-	export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3
+	export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3, Output_LL
 
 	include("./Fitting/FittingSkyrme.jl")
 	using .FittingSkyrme
