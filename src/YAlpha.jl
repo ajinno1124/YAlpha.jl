@@ -25,6 +25,7 @@ module YAlpha
 	include("./YAlphaScattering/Output.jl")
 	using .Output
 	export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3, Output_LL
+	export Output_nuopt
 
 	include("./Fitting/FittingSkyrme.jl")
 	using .FittingSkyrme

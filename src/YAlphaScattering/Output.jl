@@ -15,6 +15,8 @@ include("./CorrelationFunc.jl")
 import .CorrelationFunc
 include("./tune_a3Lam.jl")
 import .tune_a3Lam
+include("./tune_nu.jl")
+import .tune_nu
 
 function PrintHeader(io,rmesh,nu,ParamIndex,withmom)
 	println(io,"# nu = ", nu)
@@ -227,6 +229,32 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 	close(io1)
 end
 
+
+function Output_nuopt(E_ans,rmesh,ParamIndex,input_file)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+
+    io1=open("nu.dat","w")
+    #PrintHeader(io1,rmesh,nu,ParamIndex)
+	println(io1,"# E_ans = ",E_ans)
+
+	println(io1,"ParameterName	nu	BE(5HeLam)(MeV)	BE-E_ans(MeV)")
+
+    for i=eachindex(ParamIndex)
+		nu_opt=tune_nu.Optimize_nu(E_ans,rmesh,ParamIndex[i],df_Lambda)
+		aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex[i])
+		BE=tune_nu.Calc_BE_nu(nu_opt,rmesh,aL,γ)
+
+		@printf(io1,"%s\t",df_Lambda[ParamIndex[i],"ParameterName"])
+		@printf(io1,"%1.5f\t",nu_opt)
+		@printf(io1,"%1.5f\t",BE)
+		@printf(io1,"%1.5f\n",BE-E_ans)
+    end
+	
+	close(io1)
+
+end
+
 export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3, Output_LL
+export Output_nuopt
 
 end
