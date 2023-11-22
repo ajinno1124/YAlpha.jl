@@ -56,8 +56,30 @@ function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true, Gauss=fa
 		close(io2)
 	end
 	close(io1)
-
 end
+
+
+function Output_BE_nu(rmesh,nu,ParamIndex,input_file;withmom=true, Gauss=false)
+	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
+
+	file_path="data/BoundState"
+	#rm("$(file_path)/BE_nu.dat",force=true,recursive=true)
+	mkpath(file_path)
+
+	for i=eachindex(ParamIndex)
+		io1=open("$(file_path)/BE_nu_$(df_Lambda[ParamIndex[i],"ParameterName"]).dat","w")
+		PrintHeader(io1,rmesh,nu,ParamIndex,withmom)
+		println(io1,"ParameterName	nu	B.E.(MeV)")
+
+		for n=eachindex(nu)
+			E, =LamAlphaBoundState.Calc_LamAlphaBoundState(rmesh,nu[n],ParamIndex[i],df_Lambda,withmom=true,Gauss=Gauss)
+			println(io1,df_Lambda[ParamIndex[i],"ParameterName"],"\t",nu[n],"\t",E)
+		end
+
+		close(io1)
+	end
+end
+
 
 function Output_Potential(rmesh,nu,ParamIndex,input_file; Gauss=false)
 	df_Lambda=SkyrmeParams.read_SkyrmeParam(input_file)
@@ -255,6 +277,6 @@ function Output_nuopt(E_ans,rmesh,ParamIndex,input_file)
 end
 
 export Output_BoundState, Output_Potential, Output_PhaseShift, Output_CF, Output_a3opt, Replace_a3, Output_LL
-export Output_nuopt
+export Output_nuopt, Output_BE_nu
 
 end

@@ -28,7 +28,7 @@ end
 
 
 function Optimize_nu(E_ans,rmesh,ParamIndex::Int,df_Lambda)
-    nu=0.01:0.01:1.0
+    nu=0.18:0.001:0.4
     aL,γ=SkyrmeParams.getaL_gamma(df_Lambda,ParamIndex)
     args=(E_ans,rmesh,aL,γ)
 
@@ -41,7 +41,7 @@ function Optimize_nu(E_ans,rmesh,ParamIndex::Int,df_Lambda)
         end
     end
 
-    println("No optimized nu is found.")
+    println("Optimized nu is not found.")
     return NaN
 end
 

@@ -86,7 +86,6 @@ function FindE(μ,rmesh,PS)
             return Eans
         end
 	end
-	println("No bound state is found and return NaN.")
 	return NaN
 end
 
@@ -141,6 +140,7 @@ function BoundWaveFunc(μ,rmesh,PS::PotSet)
 	E=FindE(μ,rmesh,PS)
 	if isnan(E)==true
 		ψ=fill(NaN,length(rmesh))
+        println("No bound state is found. NaN is returned.")
 	else
 		ψ=ShootWaveFunc(E,μ,rmesh,PS)
 	end
