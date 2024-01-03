@@ -233,7 +233,7 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 	PrintHeader(io1,rmesh,nu,ParamIndex)
 	println(io1,"# E_ans = ",E_ans)
 
-	println(io1,"ParameterName	a1	a2	a3	a4	a5	gamma1	gamma2	BE(5He_Lam)	BE-E_ans(MeV)")
+	println(io1,"ParameterName	a1	a2	a3	a4	a5	gamma1	gamma2	nu	BE(5He_Lam)	BE-E_ans(MeV)")
 
 	for i=eachindex(ParamIndex)
 		@printf(io1,"%s\t",df_Lambda[ParamIndex[i],"ParameterName"])
@@ -244,6 +244,7 @@ function Replace_a3(E_ans,rmesh,nu,ParamIndex,input_file)
 		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"a5"])
 		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"gamma1"])
 		@printf(io1,"%1.5f\t",df_Lambda[ParamIndex[i],"gamma2"])
+		@printf(io1,"%1.5f\t",nu)
 		@printf(io1,"%1.5f\t",df_a3[ParamIndex[i],"BE(5HeLam)(MeV)"])
 		@printf(io1,"%1.5f\n",df_a3[ParamIndex[i],"BE-E_ans(MeV)"])
 	end
