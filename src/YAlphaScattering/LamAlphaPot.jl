@@ -100,13 +100,14 @@ module LamAlphaPot
 
         A=4
         nuc=GetNuc(nu,A)
-        ρ=Density(rmesh,nuc,A)
-        τ=KinDensity(rmesh,ρ,nu,A)
-        Lapρ=LapDensity(rmesh,ρ,nuc)
+        #ρ=Density(rmesh,nuc,A)
+        #τ=KinDensity(rmesh,ρ,nu,A)
+        #Lapρ=LapDensity(rmesh,ρ,nuc)
 
-        h2_2μeff=Calc_h2_2μeff(ρ,0.0)
+        h2_2μeff=Calc_h2_2μeff(a0,0.0)
 
-        return YAlphaPot(rmesh,ρ,τ,Lapρ,V,h2_2μeff,a0,a0)
+        #return YAlphaPot(rmesh,ρ,τ,Lapρ,V,h2_2μeff,a0,a0)
+		return YAlphaPot(rmesh,a0,a0,a0,V,h2_2μeff,a0,a0)
     end
 
     export CalcPotentials, GaussianPot

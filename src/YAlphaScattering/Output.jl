@@ -39,7 +39,7 @@ function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true, Gauss=fa
 	mkpath(file_path)
 	io1=open("$(file_path)/BindingEnergy.dat","w")
 	PrintHeader(io1,rmesh,nu,ParamIndex,withmom)
-	println(io1,"ParameterName	B.E.(MeV)")
+	println(io1,"ParameterName	B.E.(MeV)	RMS(fm)")
 
 	for i=eachindex(ParamIndex)
 		io2=open("$(file_path)/$(df_Lambda[ParamIndex[i],"ParameterName"]).dat","w")
@@ -48,8 +48,8 @@ function Output_BoundState(rmesh,nu,ParamIndex,input_file;withmom=true, Gauss=fa
 
 		E,ψ=LamAlphaBoundState.Calc_LamAlphaBoundState(rmesh,nu,ParamIndex[i],df_Lambda,withmom=true,Gauss=Gauss)
 		r=LamAlphaBoundState.DistributionSize(rmesh,ψ)
-		println(io1,"# distribution size r = $r fm")
-		println(io1,df_Lambda[ParamIndex[i],"ParameterName"], "	", E)
+		#println(io1,"# distribution size r = $r fm")
+		println(io1,df_Lambda[ParamIndex[i],"ParameterName"], "	", E, "	", r)
 		for j=eachindex(rmesh)
 			println(io2,rmesh[j], "	", ψ[j])
 		end
